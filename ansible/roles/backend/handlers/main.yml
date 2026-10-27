@@ -1,0 +1,6 @@
+
+---
+- name: Restart SSH
+  ansible.builtin.command: /bin/kill -HUP "$(cat /run/sshd/sshd.pid)"
+  changed_when: true
+  become: true

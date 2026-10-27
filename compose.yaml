@@ -1,16 +1,44 @@
 
 services:
   backend1:
-    image: nginx:alpine
+    build:
+      context: ./docker/backend
     container_name: backend1
-    command: /bin/sh -c "echo 'Hello from Backend 1' > /usr/share/nginx/html/index.html && nginx -g 'daemon off;'"
+    volumes:
+      - ./ansible/ansible_key.pub:/tmp/ansible_key.pub:ro
+    command:
+      - /bin/sh
+      - -c
+      - |
+        mkdir -p /home/ansible/.ssh
+        cat /tmp/ansible_key.pub > /home/ansible/.ssh/authorized_keys
+        chown -R ansible:ansible /home/ansible/.ssh
+        chmod 700 /home/ansible/.ssh
+        chmod 600 /home/ansible/.ssh/authorized_keys
+        echo 'Hello from Backend 1' > /usr/share/nginx/html/index.html
+        /usr/sbin/sshd
+        exec nginx -g 'daemon off;'
     networks:
       - app-network
 
   backend2:
-    image: nginx:alpine
+    build:
+      context: ./docker/backend
     container_name: backend2
-    command: /bin/sh -c "echo 'Hello from Backend 2' > /usr/share/nginx/html/index.html && nginx -g 'daemon off;'"
+    volumes:
+      - ./ansible/ansible_key.pub:/tmp/ansible_key.pub:ro
+    command:
+      - /bin/sh
+      - -c
+      - |
+        mkdir -p /home/ansible/.ssh
+        cat /tmp/ansible_key.pub > /home/ansible/.ssh/authorized_keys
+        chown -R ansible:ansible /home/ansible/.ssh
+        chmod 700 /home/ansible/.ssh
+        chmod 600 /home/ansible/.ssh/authorized_keys
+        echo 'Hello from Backend 2' > /usr/share/nginx/html/index.html
+        /usr/sbin/sshd
+        exec nginx -g 'daemon off;'
     networks:
       - app-network
 
@@ -27,8 +55,11 @@ services:
 
   
   reverse-proxy:
-    image: nginx:alpine
+    build:
+      context: ./docker/proxy
     container_name: reverse-proxy
+    cap_add:
+      - NET_ADMIN
     ports:
       - "8080:80"
       - "8443:443"

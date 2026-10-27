@@ -1,0 +1,32 @@
+
+---
+- name: Disable root SSH login
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin no'
+  become: true
+  notify: Restart SSH
+
+- name: Disable password-based SSH login
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+  become: true
+  notify: Restart SSH
+
+- name: Validate SSH configuration
+  ansible.builtin.command: /usr/sbin/sshd -t
+  changed_when: false
+  become: true
+
+- name: Check backend web server response
+  ansible.builtin.uri:
+    url: "http://{{ inventory_hostname }}"
+    status_code: 200
+  register: backend_health
+
+- name: Display backend health status
+  ansible.builtin.debug:
+    msg: "{{ inventory_hostname }} returned HTTP {{ backend_health.status }}"

@@ -24,3 +24,12 @@ desktop.ini
 # IDE settings
 .vscode/
 .idea/
+
+
+# Ansible SSH keys - never upload private keys
+/ansible/ansible_key
+/ansible/ansible_key.pub
+
+# Local backups and generated config
+*.backup
+compose-backup.txt
