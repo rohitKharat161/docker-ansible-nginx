@@ -29,4 +29,4 @@
 
 - name: Display backend health status
   ansible.builtin.debug:
-    msg: "{{ inventory_hostname }} returned HTTP {{ backend_health.status }}"
+    msg: "{{ inventory_hostname }} returned HTTP {{ backend_health.status | default('not checked in dry-run') }}"
