@@ -1,0 +1,26 @@
+# Secrets and private keys
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+nginx/certs/
+
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE settings
+.vscode/
+.idea/

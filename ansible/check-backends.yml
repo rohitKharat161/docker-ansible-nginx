@@ -1,0 +1,16 @@
+
+---
+- name: Check backend web servers
+  hosts: backends
+  gather_facts: false
+
+  tasks:
+    - name: Check backend HTTP response
+      ansible.builtin.uri:
+        url: "http://{{ inventory_hostname }}"
+        return_content: true
+      register: result
+
+    - name: Display backend response
+      ansible.builtin.debug:
+        var: result.content
