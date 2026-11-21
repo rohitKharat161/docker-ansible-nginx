@@ -1,0 +1,18 @@
+flowchart TB
+    C["Client / Browser"]
+    RP["Nginx Reverse Proxy<br/>HTTP 8080 to HTTPS 8443<br/>TLS and Firewall"]
+
+    C --> RP
+
+    subgraph NET["Docker Bridge Network: app-network"]
+        direction TB
+
+        RP --> LB["Nginx Upstream<br/>Default Round Robin"]
+
+        LB --> B1["Backend 1<br/>Nginx + SSH"]
+        LB --> B2["Backend 2<br/>Nginx + SSH"]
+
+        AC["Ansible Control Node"]
+        AC -->|"SSH Key"| B1
+        AC -->|"SSH Key"| B2
+    end

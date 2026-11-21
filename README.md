@@ -1,4 +1,4 @@
-# Docker \& Ansible Infrastructure with Nginx Reverse Proxy
+﻿# Docker \& Ansible Infrastructure with Nginx Reverse Proxy
 
 
 
@@ -15,6 +15,24 @@ This project simulates a small multi-server web infrastructure using Docker Comp
 
 
 ## Architecture
+
+```mermaid
+flowchart TB
+    C["Client / Browser"]
+    RP["Nginx Reverse Proxy<br/>HTTP 8080 to HTTPS 8443<br/>TLS and Firewall"]
+
+    C --> RP
+
+    subgraph NET["Docker Bridge Network: app-network"]
+        direction TB
+        RP --> LB["Nginx Upstream<br/>Default Round Robin"]
+        LB --> B1["Backend 1<br/>Nginx + SSH"]
+        LB --> B2["Backend 2<br/>Nginx + SSH"]
+        AC["Ansible Control Node"]
+        AC -->|"SSH Key"| B1
+        AC -->|"SSH Key"| B2
+    end
+```
 
 
 
@@ -36,7 +54,7 @@ This project simulates a small multi-server web infrastructure using Docker Comp
 
 
 
-`Client → HTTP (8080) → HTTPS (8443) → Nginx Reverse Proxy → Backend 1 / Backend 2`
+Client -> HTTP (8080) -> HTTPS (8443) -> Nginx Reverse Proxy -> Backend 1 / Backend 2
 
 
 
@@ -212,7 +230,7 @@ The playbook checks that both backends return HTTP 200.
 
 ```bash
 
-docker exec ansible-control sh -c "ANSIBLE\_CONFIG=/tmp/ansible.cfg ansible-playbook -i /ansible/inventory/hosts.ini /ansible/check-backends.yml"
+docker exec ansible-control sh -c "ANSIBLE_CONFIG=/etc/ansible/ansible.cfg ansible-playbook -i /ansible/inventory/hosts.ini /ansible/check-backends.yml"
 
 ```
 
@@ -353,6 +371,4 @@ Rohit Kharat
 
 
 GitHub: \[docker-ansible-nginx](https://github.com/rohitKharat161/docker-ansible-nginx)
-
-
 
